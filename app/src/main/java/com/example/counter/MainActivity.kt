@@ -3,8 +3,7 @@ package com.example.counter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.TextView
+import com.example.counter.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,32 +14,37 @@ class MainActivity : AppCompatActivity() {
         const val COUNT = "rotate"
     }
 
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         Log.d(TAG,"onCreate is called")
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
 
-        val click = findViewById<TextView>(R.id.countValue)
+        val click = binding.countValue
 
-        val decrease = findViewById<Button>(R.id.decreaseButton)
-            decrease.setOnClickListener {
+        binding.decreaseButton.setOnClickListener {
             mCount--
-                click.text = "$mCount"
+                click.text = mCount.toString()
         }
 
-        val increase = findViewById<Button>(R.id.increaseButton)
-            increase.setOnClickListener {
+        binding.increaseButton.setOnClickListener {
             mCount++
-                click.text = "$mCount"
+                click.text = mCount.toString()
         }
-
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         mCount = savedInstanceState.getInt(COUNT,0)
-        val click1 = findViewById<TextView>(R.id.countValue)
-        click1.text = "$mCount"
+        val click1 = binding.countValue
+        click1.text = mCount.toString()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(COUNT,mCount)
+        Log.d(TAG,"onSaveInstance called")
     }
 
     override fun onStart() {
@@ -71,11 +75,5 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
         Log.d(TAG,"onRestart Called")
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(COUNT,mCount)
-        Log.d(TAG,"onSaveInstance called")
     }
 }
